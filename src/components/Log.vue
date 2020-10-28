@@ -1,5 +1,9 @@
 <template>
-    <div class="log"></div>
+    <div class="log">
+        <div class="box-historico">
+            <div id="last-message"></div>
+        </div>
+    </div>
 </template>
 
 <script>

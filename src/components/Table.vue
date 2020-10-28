@@ -1,5 +1,10 @@
 <template>
-    <div class="table"></div>
+    <div class="table">
+        <div class="box-cards">
+            <h2>Cartas da mesa</h2>
+            <div id="table-cards"></div>
+        </div>
+    </div>
 </template>
 
 <script>
