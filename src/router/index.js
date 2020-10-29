@@ -1,19 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Lobby from '../views/Lobby.vue'
-import PreLobby from '../views/PreLobby.vue'
+import Room from '../views/Room.vue'
 
 Vue.use(VueRouter)
 
 const routes = [{
     path: '/',
-    name: 'PreLobby',
-    component: PreLobby
-  },
-  {
-    path: '/Lobby',
     name: 'Lobby',
     component: Lobby
+  },
+  {
+    path: '/Room',
+    name: 'Room',
+    component: Room
   }
 ]
 
