@@ -31,6 +31,12 @@ export default {
         PopupPlayer,
         StatusBox,
     },
+    data() {
+        return {
+            deckCards: "",
+            currentTurn: "",
+        };
+    },
     sockets: {
         connect: function () {
             console.log("socket to notification channel connected");
@@ -144,17 +150,13 @@ export default {
             // Last message
             document
                 .querySelector("#last-message")
-                .append(`<p>${data.message}</p>`);
+                .insertAdjacentHTML("beforeend", `<p>${data.message}</p>`);
 
             // Is there a match going on?
             if (match) {
                 // Game status
-                document.querySelector(
-                    "#current-turn"
-                ).innerHTML = `<p>${match.turns}</p>`;
-                document.querySelector(
-                    "#deck-cards-left"
-                ).innerHTML = `<p>${match.deck.cards.length}</p>`;
+                this.currentTurn = match.turns;
+                this.deckCards = match.deck.cards.length;
 
                 // Cards in table
                 document.querySelector("#table-cards").innerHTML = "";
@@ -162,7 +164,8 @@ export default {
                 match.tableCards.forEach((c) => {
                     document
                         .querySelector("#table-cards")
-                        .append(
+                        .insertAdjacentHTML(
+                            "beforeend",
                             `<div class="card">${c.word}<small>(${c.points})</small></div>`
                         );
                 });
@@ -187,7 +190,8 @@ export default {
                         match.currentPlayerIndex == index + 1 ? "ativo" : "";
                     document
                         .querySelector("#players-list")
-                        .append(
+                        .insertAdjacentHTML(
+                            "beforeend",
                             `<h3 class="${ativo}">${p.name} <small>(${p.score} pontos)</small></h3>`
                         );
                 });
