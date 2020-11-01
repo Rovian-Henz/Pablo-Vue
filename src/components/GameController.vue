@@ -1,22 +1,10 @@
 <template>
     <div class="gameController">
-        <div id="control-panel" class="fifty-fifty">
+        <div id="control-panel">
             <h1>Ações do jogo</h1>
             <fieldset>
                 <h3>Iniciar partida</h3>
                 <button type="button" @click="startGame">Iniciar jogo</button>
-            </fieldset>
-
-            <fieldset>
-                <h3>Pescar do baralho</h3>
-                <button type="button" @click="drawDeck">
-                    Pescar - Baralho
-                </button>
-            </fieldset>
-
-            <fieldset>
-                <h3>Encerrar turno</h3>
-                <button type="button" @click="nextTurn">Próxima rodada</button>
             </fieldset>
 
             <fieldset>
@@ -38,12 +26,6 @@ export default {
     methods: {
         startGame() {
             this.$parent.startGame();
-        },
-        drawDeck() {
-            this.$parent.drawDeck();
-        },
-        nextTurn() {
-            this.$parent.nextTurn();
         },
         endGame() {
             this.$parent.endGame();

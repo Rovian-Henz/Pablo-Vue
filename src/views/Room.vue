@@ -35,6 +35,9 @@ export default {
         return {
             deckCards: "",
             currentTurn: "",
+            playerPoints: "",
+            activePlayer: "",
+            baseStore: this.$store.state,
         };
     },
     sockets: {
@@ -65,21 +68,10 @@ export default {
         },
     },
     methods: {
-        gerenciaActiveUser(action = "get", user = "") {
-            if (action == "get") {
-                return localStorage.getItem("currentPlayer");
-            }
-            if (action == "set") {
-                localStorage.setItem("currentPlayer", user);
-                return "ok";
-            }
-            return "";
-        },
-        saveUser(playerName) {
-            const resposta = this.gerenciaActiveUser("set", playerName);
-            if (resposta) {
+        saveUser() {
+            if (this.baseStore.playerName) {
                 document.querySelector(".backdrop").classList.add("hide");
-                this.join(playerName);
+                this.join(this.baseStore.playerName);
             }
         },
         addClickCard() {
@@ -128,24 +120,23 @@ export default {
             this.$socket.emit("start");
         },
         playCard(card) {
-            this.$socket.emit("card played", this.gerenciaActiveUser(), card);
+            this.$socket.emit("card played", this.baseStore.playerName, card);
         },
         nextTurn() {
             this.$socket.emit("next");
         },
         emitDraw() {
-            this.$socket.emit("draw deck", this.gerenciaActiveUser());
+            this.$socket.emit("draw deck", this.baseStore.playerName);
         },
         drawTable(card) {
-            this.$socket.emit("draw table", this.gerenciaActiveUser(), card);
+            this.$socket.emit("draw table", this.baseStore.playerName, card);
         },
         endGame() {
-            localStorage.clear();
+            this.$store.commit("playerName", "");
             this.$socket.emit("end");
         },
         updateGameState(data) {
             const match = data.match;
-            console.log(data.match);
 
             // Last message
             document
@@ -161,38 +152,45 @@ export default {
                 // Cards in table
                 document.querySelector("#table-cards").innerHTML = "";
 
-                match.tableCards.forEach((c) => {
+                match.tableCards.forEach((card) => {
                     document
                         .querySelector("#table-cards")
                         .insertAdjacentHTML(
                             "beforeend",
-                            `<div class="card">${c.word}<small>(${c.points})</small></div>`
+                            `<div class="card">${card.word}<small>(${card.points})</small></div>`
                         );
                 });
+
+                match.currentPlayer.name == this.baseStore.playerName
+                    ? (this.activePlayer = true)
+                    : (this.activePlayer = false);
 
                 // Players & Cards in Hand
                 document.querySelector("#player-hand").innerHTML = "";
                 document.querySelector("#players-list").innerHTML = "";
 
-                match.players.forEach((p, index) => {
+                match.players.forEach((player, index) => {
                     // Show only cards in the hand of page user
-                    if (p.name == document.querySelector("#user").value) {
-                        p.hand.forEach((c) => {
+                    if (player.name == this.baseStore.playerName) {
+                        this.playerIndex = index;
+                        this.playerPoints = player.score;
+                        player.hand.forEach((card) => {
                             document
                                 .querySelector("#player-hand")
                                 .insertAdjacentHTML(
                                     "beforeend",
-                                    `<div class="card">${c.word}<small>(${c.points})</small></div>`
+                                    `<div class="card">${card.word}<small>(${card.points})</small></div>`
                                 );
                         });
                     }
                     const ativo =
                         match.currentPlayerIndex == index + 1 ? "ativo" : "";
+
                     document
                         .querySelector("#players-list")
                         .insertAdjacentHTML(
                             "beforeend",
-                            `<h3 class="${ativo}">${p.name} <small>(${p.score} pontos)</small></h3>`
+                            `<h3 class="${ativo}">${player.name} <small>(${player.score} pontos)</small></h3>`
                         );
                 });
             } else {

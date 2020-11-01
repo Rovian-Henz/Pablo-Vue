@@ -1,9 +1,9 @@
 <template>
-    <div class="popupPlayer">
+    <div class="popup-player">
         <div class="backdrop">
             <div class="popup-player-name">
                 <label for="user" class="user-title">Apelido</label>
-                <input type="text" name="user" id="user" />
+                <input type="text" name="user" v-model="playerName" />
                 <button type="button" @click="savePlayer">Entrar</button>
             </div>
         </div>
@@ -16,13 +16,13 @@ export default {
     data() {
         return {
             baseStore: this.$store.state,
+            playerName: "",
         };
     },
     methods: {
         savePlayer() {
-            const player = document.querySelector("#user").value;
-            this.$store.commit("namePlayer", player);
-            this.$parent.saveUser(player);
+            this.$store.commit("playerName", this.playerName);
+            this.$parent.saveUser();
         },
     },
 };

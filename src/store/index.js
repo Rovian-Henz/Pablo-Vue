@@ -5,11 +5,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    namePlayer: "",
+    playerName: "",
   },
   mutations: {
-    namePlayer(state, payload) {
-      state.namePlayer = payload;
+    playerName(state, payload) {
+      state.playerName = payload;
     },
   },
   actions: {},
