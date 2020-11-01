@@ -75,38 +75,24 @@ export default {
             }
         },
         addClickCard() {
-            const CreateClickEventHandCard = setInterval(() => {
-                let cards = document.querySelectorAll("#player-hand .card");
-                if (cards[1]) {
-                    clearInterval(CreateClickEventHandCard);
-                    cards.forEach((card) => {
-                        card.addEventListener("click", () => {
-                            this.playCard(card.innerText.slice(0, -4));
-                            this.addClickCard();
-                            this.addDrawTableCard();
-                        });
-                    });
-                }
-            }, 100);
+            let playerHand = document.querySelector("#player-hand");
+            if (playerHand) {
+                playerHand.addEventListener("click", (event) => {
+                    this.playCard(event.target.innerText.slice(0, -3));
+                });
+            }
         },
         addDrawTableCard() {
-            const CreateClickEventTableCard = setInterval(() => {
-                let cards = document.querySelectorAll("#table-cards .card");
-                if (cards[1]) {
-                    clearInterval(CreateClickEventTableCard);
-                    cards.forEach((card) => {
-                        card.addEventListener("click", () => {
-                            this.drawTable(card.innerText.slice(0, -4));
-                            this.addClickCard();
-                            this.addDrawTableCard();
-                        });
-                    });
-                }
-            }, 100);
+            let table = document.querySelector("#table-cards");
+            if (table) {
+                table.addEventListener("click", (event) => {
+                    this.drawTable(event.target.innerText.slice(0, -3));
+                });
+            }
         },
         drawDeck() {
             this.emitDraw();
-            this.addClickCard();
+            //this.addClickCard();
         },
         startGame() {
             this.emitStart();
@@ -120,16 +106,19 @@ export default {
             this.$socket.emit("start");
         },
         playCard(card) {
-            this.$socket.emit("card played", this.baseStore.playerName, card);
+            this.$socket.emit("cardPlayed", this.baseStore.playerName, card);
+            console.log("emitiu jogar carta");
         },
         nextTurn() {
             this.$socket.emit("next");
         },
         emitDraw() {
-            this.$socket.emit("draw deck", this.baseStore.playerName);
+            this.$socket.emit("drawDeck", this.baseStore.playerName);
+            console.log("emitiu pescar");
         },
         drawTable(card) {
-            this.$socket.emit("draw table", this.baseStore.playerName, card);
+            this.$socket.emit("drawTable", this.baseStore.playerName, card);
+            console.log("emitiu pegar da mesa");
         },
         endGame() {
             this.$store.commit("playerName", "");
