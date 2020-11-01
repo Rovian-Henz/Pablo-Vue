@@ -29,4 +29,39 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.backdrop {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 99;
+    &.hide {
+        display: none;
+    }
+    .popup-player-name {
+        max-width: 500px;
+        margin: 1.75rem auto;
+        flex-direction: column;
+        width: 100%;
+        pointer-events: auto;
+        background-color: rgba(255, 255, 255, 0.75);
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0.3rem;
+        outline: 0;
+        display: flex;
+        position: relative;
+        height: 300px;
+        justify-content: center;
+        align-items: center;
+        grid-gap: 10px;
+    }
+}
 </style>

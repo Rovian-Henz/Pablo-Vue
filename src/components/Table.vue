@@ -1,7 +1,6 @@
 <template>
     <div class="table">
         <div class="box-cards">
-            <h2>Cartas da mesa</h2>
             <div id="table-cards"></div>
         </div>
     </div>
@@ -14,4 +13,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+#table-cards {
+    display: flex;
+    grid-gap: 10px;
+    justify-content: center;
+}
 </style>

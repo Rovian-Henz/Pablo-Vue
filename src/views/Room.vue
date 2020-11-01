@@ -1,12 +1,17 @@
 <template>
     <div class="room">
         <PopupPlayer />
-        <StatusBox />
-        <Table />
-        <GameController />
-        <Player />
-        <PlayerList />
-        <Log msg="Welcome to Your Vue.js App" />
+        <div class="game-items">
+            <div class="command-status">
+                <GameController />
+                <ActiveMsg />
+                <StatusBox />
+            </div>
+            <Table />
+            <Player />
+            <PlayerList />
+            <Log msg="Welcome to Your Vue.js App" />
+        </div>
     </div>
 </template>
 
@@ -19,6 +24,7 @@ import Player from "@/components/Player.vue";
 import PlayerList from "@/components/PlayerList.vue";
 import PopupPlayer from "@/components/PopupPlayer.vue";
 import StatusBox from "@/components/StatusBox.vue";
+import ActiveMsg from "@/components/ActiveMsg.vue";
 
 export default {
     name: "Room",
@@ -30,6 +36,7 @@ export default {
         Table,
         PopupPlayer,
         StatusBox,
+        ActiveMsg,
     },
     data() {
         return {
@@ -37,6 +44,8 @@ export default {
             currentTurn: "",
             playerPoints: "",
             activePlayer: "",
+            actualPlayer: "",
+            lastPlayed: "",
             baseStore: this.$store.state,
         };
     },
@@ -45,11 +54,12 @@ export default {
             console.log("socket to notification channel connected");
         },
         join: function (data) {
-            console.log("joined teste");
             this.updateGameState(data);
         },
         start: function (data) {
             this.updateGameState(data);
+            this.addClickCard();
+            this.addDrawTableCard();
         },
         cardPlayed: function (data) {
             this.updateGameState(data);
@@ -78,7 +88,7 @@ export default {
             let playerHand = document.querySelector("#player-hand");
             if (playerHand) {
                 playerHand.addEventListener("click", (event) => {
-                    this.playCard(event.target.innerText.slice(0, -3));
+                    this.playCard(event.target.innerText.slice(0, -4));
                 });
             }
         },
@@ -86,18 +96,15 @@ export default {
             let table = document.querySelector("#table-cards");
             if (table) {
                 table.addEventListener("click", (event) => {
-                    this.drawTable(event.target.innerText.slice(0, -3));
+                    this.drawTable(event.target.innerText.slice(0, -4));
                 });
             }
         },
         drawDeck() {
             this.emitDraw();
-            //this.addClickCard();
         },
         startGame() {
             this.emitStart();
-            this.addClickCard();
-            this.addDrawTableCard();
         },
         join(playerName) {
             this.$socket.emit("join", playerName);
@@ -107,18 +114,16 @@ export default {
         },
         playCard(card) {
             this.$socket.emit("cardPlayed", this.baseStore.playerName, card);
-            console.log("emitiu jogar carta");
+            this.lastPlayed = card;
         },
         nextTurn() {
             this.$socket.emit("next");
         },
         emitDraw() {
             this.$socket.emit("drawDeck", this.baseStore.playerName);
-            console.log("emitiu pescar");
         },
         drawTable(card) {
             this.$socket.emit("drawTable", this.baseStore.playerName, card);
-            console.log("emitiu pegar da mesa");
         },
         endGame() {
             this.$store.commit("playerName", "");
@@ -149,6 +154,8 @@ export default {
                             `<div class="card">${card.word}<small>(${card.points})</small></div>`
                         );
                 });
+
+                this.actualPlayer = match.currentPlayer.name;
 
                 match.currentPlayer.name == this.baseStore.playerName
                     ? (this.activePlayer = true)
@@ -195,3 +202,80 @@ export default {
     },
 };
 </script>
+<style lang="scss">
+$card-border-color: #e2d9d5;
+$card-bg-color: #f3f3f3;
+$color-red: #fb8c8c;
+$color-yellow: #fbe38c;
+$color-blue: #736cae;
+$color-green: #70c970;
+
+.command-status {
+    display: flex;
+    justify-content: space-around;
+}
+#player-hand {
+    .card {
+        background: $card-bg-color;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 4px 4px 15px 2px rgba(0, 0, 0, 0.1);
+        width: 75px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 0.2s;
+        flex-direction: column;
+        cursor: pointer;
+        border: 1px solid $card-border-color;
+        &:not(:first-child) {
+            margin-left: -20px;
+        }
+        &:hover {
+            transform: translateY(-10px);
+            ~ .card {
+                transform: translateX(20px);
+            }
+        }
+    }
+}
+#table-cards {
+    .card {
+        background: $card-bg-color;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 4px 4px 15px 2px rgba(0, 0, 0, 0.1);
+        width: 75px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.2s;
+        cursor: pointer;
+        border: 1px solid $card-border-color;
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+}
+body {
+    overflow: hidden;
+    background-color: #dcdcdc;
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+}
+.game-items {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    justify-content: space-around;
+}
+#players-list .ativo {
+    color: $color-green;
+}
+</style>

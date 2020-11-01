@@ -1,16 +1,12 @@
 <template>
     <div class="gameController">
         <div id="control-panel">
-            <h1>Ações do jogo</h1>
-            <fieldset>
-                <h3>Iniciar partida</h3>
-                <button type="button" @click="startGame">Iniciar jogo</button>
-            </fieldset>
-
-            <fieldset>
-                <h3>Encerrar partida</h3>
-                <button type="button" @click="endGame">Encerrar jogo</button>
-            </fieldset>
+            <button type="button" class="start-button" @click="startGame">
+                Iniciar
+            </button>
+            <button type="button" class="end-button" @click="endGame">
+                Encerrar
+            </button>
         </div>
     </div>
 </template>
@@ -35,4 +31,33 @@ export default {
 </script>
 
 <style scoped lang="scss">
+$card-border-color: #e2d9d5;
+$card-bg-color: #f3f3f3;
+$color-red: #fb8c8c;
+$color-yellow: #fbe38c;
+$color-blue: #736cae;
+$color-green: #70c970;
+
+#control-panel {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 5px;
+}
+
+.start-button {
+    background: $color-green;
+    border: 1px solid $card-border-color;
+    padding: 10px 30px;
+    border-radius: 5px;
+    color: #333;
+    cursor: pointer;
+}
+.end-button {
+    background: $color-red;
+    border: 1px solid $card-border-color;
+    padding: 10px 30px;
+    border-radius: 5px;
+    color: #333;
+    cursor: pointer;
+}
 </style>
