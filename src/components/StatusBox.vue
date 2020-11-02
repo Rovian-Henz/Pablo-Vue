@@ -23,7 +23,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$card-border-color: #e2d9d5;
+$body-bg-color: #e2d9d5;
+$card-border-color: #d9d9d9;
 $card-bg-color: #f3f3f3;
 $color-red: #fb8c8c;
 $color-yellow: #fbe38c;
@@ -65,6 +66,9 @@ $color-green: #70c970;
 .card::after,
 .card .card-inner {
     background-color: $card-bg-color;
+    background: url(../assets/img/fundo_deck.jpg);
+    background-repeat: repeat-y;
+    background-size: contain;
     border: 1px solid $card-border-color;
     border-radius: 5px;
     transition: transform 0.3s;

@@ -45,6 +45,7 @@ export default {
             playerPoints: "",
             activePlayer: "",
             actualPlayer: "",
+            lastPlayedColors: [0, 0, 0],
             lastPlayed: "",
             baseStore: this.$store.state,
         };
@@ -88,7 +89,8 @@ export default {
             let playerHand = document.querySelector("#player-hand");
             if (playerHand) {
                 playerHand.addEventListener("click", (event) => {
-                    this.playCard(event.target.innerText.slice(0, -4));
+                    this.addToLastPlayed(event.target);
+                    this.playCard(event.target.innerText);
                 });
             }
         },
@@ -96,9 +98,22 @@ export default {
             let table = document.querySelector("#table-cards");
             if (table) {
                 table.addEventListener("click", (event) => {
-                    this.drawTable(event.target.innerText.slice(0, -4));
+                    this.drawTable(event.target.innerText);
                 });
             }
+        },
+        addToLastPlayed(card) {
+            let element = document.querySelector("#last-played .card");
+            element.className = "card card-rotate";
+
+            this.lastPlayedColors.shift();
+            this.lastPlayedColors.push(card.dataset.points);
+
+            element.classList.add(`color1-${this.lastPlayedColors[2]}`);
+            element.classList.add(`color2-${this.lastPlayedColors[1]}`);
+            element.classList.add(`color3-${this.lastPlayedColors[0]}`);
+
+            console.log(this.lastPlayedColors);
         },
         drawDeck() {
             this.emitDraw();
@@ -147,11 +162,23 @@ export default {
                 document.querySelector("#table-cards").innerHTML = "";
 
                 match.tableCards.forEach((card) => {
+                    let card_color = "";
+                    switch (card.points) {
+                        case 1:
+                            card_color = "color1";
+                            break;
+                        case 2:
+                            card_color = "color2";
+                            break;
+                        default:
+                            card_color = "color3";
+                    }
+
                     document
                         .querySelector("#table-cards")
                         .insertAdjacentHTML(
                             "beforeend",
-                            `<div class="card">${card.word}<small>(${card.points})</small></div>`
+                            `<div class="card ${card_color}" data-points="${card.points}">${card.word}</div>`
                         );
                 });
 
@@ -170,12 +197,25 @@ export default {
                     if (player.name == this.baseStore.playerName) {
                         this.playerIndex = index;
                         this.playerPoints = player.score;
+
                         player.hand.forEach((card) => {
+                            let card_color = "";
+                            switch (card.points) {
+                                case 1:
+                                    card_color = "color1";
+                                    break;
+                                case 2:
+                                    card_color = "color2";
+                                    break;
+                                default:
+                                    card_color = "color3";
+                            }
+
                             document
                                 .querySelector("#player-hand")
                                 .insertAdjacentHTML(
                                     "beforeend",
-                                    `<div class="card">${card.word}<small>(${card.points})</small></div>`
+                                    `<div class="card ${card_color}" data-points="${card.points}">${card.word}</div>`
                                 );
                         });
                     }
@@ -203,12 +243,85 @@ export default {
 };
 </script>
 <style lang="scss">
-$card-border-color: #e2d9d5;
+$body-bg-color: #e2d9d5;
+$card-border-color: #d9d9d9;
 $card-bg-color: #f3f3f3;
 $color-red: #fb8c8c;
 $color-yellow: #fbe38c;
 $color-blue: #736cae;
 $color-green: #70c970;
+
+$card-blue: #1f6eb0;
+$card-red: #cb392c;
+$card-green: #7cb63b;
+$card-yellow: #f2c828;
+$card-black: #131416;
+$card-gray: #d9d9d9;
+$deck-color: #2f2f2f;
+$deck-color: #2f2f2f;
+
+.card {
+    color: #fff;
+    position: relative;
+    &.color1 {
+        background: $card-green;
+    }
+    &.color2 {
+        background: $card-blue;
+    }
+    &.color3 {
+        background: $card-red;
+    }
+    &:before {
+        content: attr(data-points);
+        position: absolute;
+        top: 6px;
+        left: 6px;
+    }
+    &:after {
+        content: attr(data-points);
+        position: absolute;
+        bottom: 6px;
+        right: 6px;
+    }
+}
+
+#last-played {
+    .card {
+        &.color1-1 .card-inner {
+            background-color: $card-green;
+        }
+        &.color1-2 .card-inner {
+            background-color: $card-blue;
+        }
+        &.color1-3 .card-inner {
+            background-color: $card-red;
+        }
+        &.color2-1:before {
+            background-color: $card-green;
+        }
+        &.color2-2:before {
+            background-color: $card-blue;
+        }
+        &.color2-3:before {
+            background-color: $card-red;
+        }
+        &.color3-1:after {
+            background-color: $card-green;
+        }
+        &.color3-2:after {
+            background-color: $card-blue;
+        }
+        &.color3-3:after {
+            background-color: $card-red;
+        }
+
+        &:before,
+        &:after {
+            content: "";
+        }
+    }
+}
 
 .command-status {
     display: flex;
@@ -216,7 +329,7 @@ $color-green: #70c970;
 }
 #player-hand {
     .card {
-        background: $card-bg-color;
+        // background: $card-bg-color;
         border-radius: 10px;
         padding: 20px;
         box-shadow: 4px 4px 15px 2px rgba(0, 0, 0, 0.1);
@@ -242,7 +355,7 @@ $color-green: #70c970;
 }
 #table-cards {
     .card {
-        background: $card-bg-color;
+        // background: $card-bg-color;
         border-radius: 10px;
         padding: 20px;
         box-shadow: 4px 4px 15px 2px rgba(0, 0, 0, 0.1);
@@ -262,7 +375,7 @@ $color-green: #70c970;
 }
 body {
     overflow: hidden;
-    background-color: #dcdcdc;
+    background-color: $body-bg-color;
     padding: 0;
     margin: 0;
     width: 100vw;

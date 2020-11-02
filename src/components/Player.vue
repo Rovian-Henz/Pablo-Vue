@@ -2,7 +2,7 @@
     <div class="player">
         <div class="points">
             <div id="last-played">
-                <div class="card card-rotate" v-if="this.$parent.lastPlayed">
+                <div class="card card-rotate">
                     <div class="card-inner">
                         <span>{{ this.$parent.lastPlayed }}</span>
                     </div>
@@ -54,7 +54,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$card-border-color: #e2d9d5;
+$body-bg-color: #e2d9d5;
+$card-border-color: #d9d9d9;
 $card-bg-color: #f3f3f3;
 $color-red: #fb8c8c;
 $color-yellow: #fbe38c;
@@ -131,8 +132,18 @@ $color-green: #70c970;
     height: 100%;
 }
 
-.card::before,
-.card::after,
+.card::before {
+    background-color: $card-bg-color;
+    border: 1px solid $card-border-color;
+    border-radius: 5px;
+    transition: transform 0.3s;
+}
+.card::after {
+    background-color: $card-bg-color;
+    border: 1px solid $card-border-color;
+    border-radius: 5px;
+    transition: transform 0.3s;
+}
 .card .card-inner {
     background-color: $card-bg-color;
     border: 1px solid $card-border-color;
@@ -154,7 +165,7 @@ $color-green: #70c970;
     align-items: center;
     span {
         display: inline-block;
-        transform: rotate(-45deg);
+        // transform: rotate(-45deg);
         font-size: 14px;
     }
 }
