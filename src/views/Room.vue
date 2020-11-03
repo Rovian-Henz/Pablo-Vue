@@ -178,7 +178,7 @@ export default {
                         .querySelector("#table-cards")
                         .insertAdjacentHTML(
                             "beforeend",
-                            `<div class="card ${card_color}" data-points="${card.points}">${card.word}</div>`
+                            `<div class="card ${card_color} ex-${card.expansion}" data-points="${card.points}">${card.word}</div>`
                         );
                 });
 
@@ -215,7 +215,7 @@ export default {
                                 .querySelector("#player-hand")
                                 .insertAdjacentHTML(
                                     "beforeend",
-                                    `<div class="card ${card_color}" data-points="${card.points}">${card.word}</div>`
+                                    `<div class="card ${card_color} ex-${card.expansion}" data-points="${card.points}">${card.word}</div>`
                                 );
                         });
                     }
@@ -263,14 +263,27 @@ $deck-color: #2f2f2f;
 .card {
     color: #fff;
     position: relative;
+    background-repeat: no-repeat;
+    background-position: 6px calc(100% - 6px);
+    background-size: 16px;
+
+    &.ex {
+        &-regular {
+            background-image: url(../assets/img/regular.png);
+        }
+        &-litleband {
+            background-image: url(../assets/img/littleband.png);
+        }
+    }
+
     &.color1 {
-        background: $card-green;
+        background-color: $card-green;
     }
     &.color2 {
-        background: $card-blue;
+        background-color: $card-blue;
     }
     &.color3 {
-        background: $card-red;
+        background-color: $card-red;
     }
     &:before {
         content: attr(data-points);
